@@ -1,5 +1,5 @@
-import config from "../config/config.js";
-import app from "./express.js";
+const config = require("../config/config.js");
+const app = require("./expressApp.js");
 
 app.listen(config.port, (err) => {
   if (err) {

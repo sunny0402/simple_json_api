@@ -2,7 +2,6 @@
   "name": "simple_json_api",
   "version": "1.0.0",
   "description": "Simple statis JSON API with Node/Express.",
-  "type": "module",
   "main": "./server/server.js",
   "scripts": {
     "start": "nodemon"
