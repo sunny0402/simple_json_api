@@ -55,8 +55,32 @@ const createRecipe = async (req, res) => {
   }
 };
 
+const updateRecipe = async (req, res) => {
+  const updatedRecipeObject = req.body;
+  try {
+    let existing_recipes = data.recipes.map((a_recipe) => {
+      return a_recipe.name;
+    });
+
+    if (!existing_recipes.includes(updatedRecipeObject.name)) {
+      throw error;
+    }
+
+    let recipe_idx = data.recipes.indexOf(updatedRecipeObject.name);
+    data.recipes.splice(recipe_idx, 1);
+    data.recipes.push(updatedRecipeObject);
+
+    return res.send(data);
+  } catch (error) {
+    return res.status(404).send({
+      error: "Recipe does not exists",
+    });
+  }
+};
+
 module.exports = {
   recipelist,
   ingredientsAndSteps,
   createRecipe,
+  updateRecipe,
 };
