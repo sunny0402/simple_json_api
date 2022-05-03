@@ -1,4 +1,5 @@
 const data = require("../database/data.json");
+// const fs = require("fs");
 
 const recipelist = async (req, res) => {
   try {
@@ -13,46 +14,49 @@ const recipelist = async (req, res) => {
   }
 };
 
-// A GET request to http://localhost:3000/recipes/details/garlicPasta returns:
-// If recipe exists:
-// Response body (JSON):
-// {
-// 	"details":
-// 		{
-// 			"ingredients": [
-// 				"500mL water",
-// 				"100g spaghetti",
-// 				"25mL olive oil",
-// 				"4 cloves garlic",
-// 				"Salt"
-// 			],
-// 			"numSteps":5
-// 		}
-// }
-// Status: 200
-// ---
-// If recipe does NOT exist:
-// Response body (JSON): {}
-// Status: 200
-
 const ingredientsAndSteps = async (req, res) => {
   try {
     let recipe_name = req.params.recipeName;
     const recipeDetails = data.recipes.filter((a_recipe) => {
       return a_recipe.name === recipe_name;
     });
+    if (recipeDetails.length === 0) {
+      throw new Error("No such recipe exists.");
+    }
     return res.status(200).send({
       details: {
         ingredients: recipeDetails[0].ingredients,
         numSteps: recipeDetails[0].instructions.length,
       },
     });
-  } catch (err) {
-    return res.status(400).send(`There was an error: ${err}`);
+  } catch (error) {
+    return res.status(200).send({ error });
+  }
+};
+
+const createRecipe = async (req, res) => {
+  const newRecipe = req.body;
+  try {
+    let existing_recipes = data.recipes.map((a_recipe) => {
+      return a_recipe.name;
+    });
+
+    if (existing_recipes.includes(newRecipe.name)) {
+      throw error;
+    }
+
+    data.recipes.push(newRecipe);
+
+    return res.sendStatus(201);
+  } catch (error) {
+    return res.status(400).send({
+      error: "Recipe already exists",
+    });
   }
 };
 
 module.exports = {
   recipelist,
   ingredientsAndSteps,
+  createRecipe,
 };
